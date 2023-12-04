@@ -49,9 +49,48 @@ where $d_i = \sum_{j} A_{ij}$. The degree $d_i$ is the sum of the elements in th
 
 Laplacian has many useful properties when we do inference on graphs. One example is Graph Cut Optimization Problem.
 - Objective: Find a cut that divides the graph into segments with minimal interconnections.
-- Minimization Target: $\text{min} \sum_{i,j} A_{ij}(y_i-y_j)^2$, captures the 'out' cost. The intuition behind this cost is that, if $y_i$ and $y_j$ are connected, $A_{ij}=1$ and these two nodes will be treated similarly. Otherwise (i.e., $A_{ij}=0$), we don not care! In this way, similar points should be close to each other and dissimilar points on the graph manifold will be far apart.
-- Equation: It can be shown that $\min \sum_{i,j} A_{ij}(y_i-y_j)^2$ is equivalent to $\min y^T L y$, where $L$ is the Laplacian matrix and $y$ is a vector indicating node segments.
-- onstraint Applied: $y^T y = 1$, ensures non-trivial solutions.
+- Minimization Target: $\sum_{i,j} A_{ij}(y_i-y_j)^2$, captures the 'out' cost. The intuition behind this cost is that, if $y_i$ and $y_j$ are connected, $A_{ij}=1$ and these two nodes will be treated similarly. Otherwise (i.e., $A_{ij}=0$), we don not care! In this way, similar points should be close to each other and dissimilar points on the graph manifold will be far apart.
+- Equation: It can be shown that minimizing $\sum_{i,j} A_{ij}(y_i-y_j)^2$ is equivalent to minimizing $y^T L y$, where $L$ is the Laplacian matrix and $y$ is a vector indicating node segments.
+- Constraint Applied: $y^T y = 1$, ensures non-trivial solutions.
 - Vector $y$: Represents the assignment of nodes to segments, dimension $n \times 1$.
 - Solution Method: Eigen decomposition of $L$ identifies optimal partitioning.
 
+Eigen Decomposition of Laplacian is in this way:
+- Decomposed as $L = U \Lambda U^T$
+- $U$: Orthonormal eigenvectors. Eigenvectors are orthogonal and normalized: $U^T U = I$
+- $\Lambda$: Diagonal matrix with eigenvalues. Each diagonal entry is an eigenvalue that pairs with an eigenvector in $U$
+
+Normalized Laplacian is defined as:
+
+$$
+    \widetilde{L} = D^{-\frac{1}{2}}(D - A)D^{-\frac{1}{2}}
+$$
+
+which can be simplified to:
+
+$$
+\widetilde{L} = I - D^{-\frac{1}{2}}AD^{-1}
+$$
+
+## Laplacian Eigenvectors and Fourier Analysis
+The relation between Laplacian eigenvectors and Fourier analysis is rooted in spectral graph theory. In this context, the Laplacian matrix of a graph plays a role analogous to the Fourier transform in signal processing.
+
+Fourier analysis is the decomposition of a signal into sinusoidal components. A signal is transformed to represent it as a sum of its frequency components. Sine and cosine functions serve as the basis for this transformation. These basis functions are orthogonal, ensuring a unique frequency representation.
+
+**Values of nodes** in a graph can be considered as **feature** vector in a signal space. In this way, Laplacian eigenvectors serve a similar purpose to sinusoidal components in Fourier analysis by providing a basis for representing graph signals in the frequency domain.
+
+A frequency-Like interpretation is that low eigenvalues correspond to "low-frequency" eigenvectors. These eigenvectors change slowly over the graph. They represent large-scale, smooth structures in the graph.
+In contrast, high eigenvalues correspond to "high-frequency" eigenvectors. These eigenvectors change rapidly between connected nodes. They capture fine details or irregularities in the graph.
+
+Suppose $x \in R^n$ is a feature vector of all nodes of a graph where $x$ is the value of the ith node. The graph Fourier transform to a signal $x$ can be defined as:
+
+$$
+f(x) = U^T x = \hat{x}
+$$
+
+The inverse graph Fourier transform would be:
+
+$$
+f^{-1}(\hat{x}) = U\hat{x} = UU^Tx = x
+$$
+  
