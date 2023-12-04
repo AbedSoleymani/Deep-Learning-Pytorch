@@ -93,4 +93,27 @@ The inverse graph Fourier transform would be:
 $$
 f^{-1}(\hat{x}) = U\hat{x} = UU^Tx = x
 $$
-  
+
+According to Convolution Theorem the graph convolution of the input signal $x$ with a filter $g \in \mathbb{R}$ is defined as:
+
+$$
+    (x * g) = \mathcal{F}^{-1}\left(\mathcal{F}(x) \cdot \mathcal{F}(g)\right)
+$$
+
+where $\mathcal{F}^{-1}$ denotes the inverse Fourier transform, $\mathcal{F}(x)$ and $\mathcal{F}(g)$ are the Fourier transforms of $x$ and $g$ respectively.
+
+In the graph Fourier domain, this can be expressed as:
+
+$$
+    \mathcal{F}(x * g) = U^* (\mathcal{F}(x) \odot \mathcal{F}(g)) = U^* \text{diag}(\mathcal{F}(g)) U^* x
+$$
+
+where $\odot$ denotes element-wise multiplication and $U^*$ represents the conjugate transpose of the graph Fourier basis matrix $U$.
+
+Therefore, in the vertex domain, the graph convolution is given by:
+
+$$
+    (x * g) = U \left(\text{diag}(U^* \mathcal{F}(g)) \cdot U^* x\right)
+$$
+
+where $\text{diag}(U^* \mathcal{F}(g))$ is a diagonal matrix with the elements of $U^* \mathcal{F}(g)$.
