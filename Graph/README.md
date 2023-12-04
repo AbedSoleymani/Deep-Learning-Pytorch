@@ -49,7 +49,7 @@ where $d_i = \sum_{j} A_{ij}$. The degree $d_i$ is the sum of the elements in th
 
 Laplacian has many useful properties when we do inference on graphs. One example is Graph Cut Optimization Problem.
 - Objective: Find a cut that divides the graph into segments with minimal interconnections.
-- Minimization Target: $\min \sum_{i,j} A_{ij}(y_i-y_j)^2$, captures the 'out' cost. The intuition behind this cost is that, if $y_i$ and $y_j$ are connected, $A_{ij}=1$ and these two nodes will be treated similarly. Otherwise (i.e., $A_{ij}=0$), we don not care! In this way, similar points should be close to each other and dissimilar points on the graph manifold will be far apart.
+- Minimization Target: $\text{min} \sum_{i,j} A_{ij}(y_i-y_j)^2$, captures the 'out' cost. The intuition behind this cost is that, if $y_i$ and $y_j$ are connected, $A_{ij}=1$ and these two nodes will be treated similarly. Otherwise (i.e., $A_{ij}=0$), we don not care! In this way, similar points should be close to each other and dissimilar points on the graph manifold will be far apart.
 - Equation: It can be shown that $\min \sum_{i,j} A_{ij}(y_i-y_j)^2$ is equivalent to $\min y^T L y$, where $L$ is the Laplacian matrix and $y$ is a vector indicating node segments.
 - onstraint Applied: $y^T y = 1$, ensures non-trivial solutions.
 - Vector $y$: Represents the assignment of nodes to segments, dimension $n \times 1$.
