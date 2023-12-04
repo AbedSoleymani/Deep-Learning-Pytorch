@@ -2,11 +2,11 @@
 
 ## Graph Definition
 
-A graph, denoted as `G`, can be formally defined as a set of vertices `V` and edges `E`, accompanied by an adjacency matrix `A`.
+A graph, denoted as $G$, can be formally defined as a set of vertices $V$ and edges $E$, accompanied by an adjacency matrix `A`.
 
-```plaintext
+$$
 G = (V, E, A)
-```
+$$
 
 The adjacency matrix, `A`, is a vital representation of the graph structure which captures the pairwise relationships between vertices, forming a foundation for various graph-based analyses and computations.
 
