@@ -27,12 +27,15 @@ There are three forms of tasks performed by graphs:
 
 ## Laplacian of a Graph
 The Laplacian matrix $L$ of a graph provides Insights Into the graph's structure, Including its connectivity and the presence of clusters
+
 $$
 L= D - A
 $$
+
 where $D$ is the degree Matrix, a diagonal matrix with the degree of each vertex along the diagonal and $A$ is the adjacency Matrix, as defined above.
 
 The degree matrix $D$ is a square matrix where each diagonal element $d_i$ represents the degree of the corresponding vertex $i$.
+
 $$
 D = \begin{bmatrix}
 d_1 & 0 & \cdots & 0 \\
