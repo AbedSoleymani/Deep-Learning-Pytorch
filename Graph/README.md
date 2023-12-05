@@ -117,3 +117,26 @@ $$
 $$
 
 where $\text{diag}(U^* \mathcal{F}(g))$ is a diagonal matrix with the elements of $U^* \mathcal{F}(g)$.
+
+Now, we express the mathematics of a graph convolutional layer in a Spectral CNN.
+Let $x$ be the input signal on the graph, $g$ be the filter (weight) associated with the graph convolutional layer, $U$ be the matrix of Laplacian eigenvectors, and $\Lambda$ be the diagonal matrix of Laplacian eigenvalues.
+
+The graph convolutional layer operation can be expressed as:
+
+$$
+y = \sigma\left(\sum_{i=1}^{k} g_i * x \right)
+$$
+
+where $*$ represents the graph convolution operation, $g_i$ is the filter for the $i$-th channel, $k$ is the number of channels, and $\sigma$ is an activation function.
+
+The graph convolution operation using Laplacian eigenvectors $U$ can be written as:
+
+$$
+H' = \sigma(U \Theta U^T H)\\
+x = H^{(0)}\\
+g_\theta = \Tetha
+$$
+
+where $\Tetha$ is a diagonal matrix with learnable parameters.
+
+where $\mathcal{F}(g_i)$ is the Fourier transform of the filter $g_i$.
