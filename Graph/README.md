@@ -127,4 +127,6 @@ $$
 H' = \sigma(U \Theta U^T H)
 $$
 
-where $x = H^{(0)}$, $g_\theta = \Tetha$, $\sigma$ is an activation function, and $\Tetha$ is a diagonal matrix with learnable parameters.
+where $x = H^{(0)}$, $g_\theta = \Theta$, $\sigma$ is an activation function, and $\Theta$ is a diagonal matrix with learnable parameters.
+
+The presented model was Vanilla Spectral GNN with a bad Limitation: eigen-decomposition requires $O(n^3)$ computational complexity and can't be applied on large graphs, e.g., social networks.
