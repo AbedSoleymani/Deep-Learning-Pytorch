@@ -82,7 +82,7 @@ Fourier analysis is the decomposition of a signal into sinusoidal components. A 
 A frequency-Like interpretation is that low eigenvalues correspond to "low-frequency" eigenvectors. These eigenvectors change slowly over the graph. They represent large-scale, smooth structures in the graph.
 In contrast, high eigenvalues correspond to "high-frequency" eigenvectors. These eigenvectors change rapidly between connected nodes. They capture fine details or irregularities in the graph.
 
-Suppose $x \in R^n$ is a feature vector of all nodes of a graph where $x$ is the value of the ith node. The graph Fourier transform to a signal $x$ can be defined as:
+Suppose $x \in \mathbb{R}^n$ is a feature vector of all nodes of a graph where $x$ is the value of the ith node. The graph Fourier transform to a signal $x$ can be defined as:
 
 $$
 f(x) = U^T x = \hat{x}
@@ -94,7 +94,7 @@ $$
 f^{-1}(\hat{x}) = U\hat{x} = UU^Tx = x
 $$
 
-According to Convolution Theorem the graph convolution of the input signal $x$ with a filter $g \in \mathbb{R}$ is defined as:
+According to the Convolution Theorem, the graph convolution of the input signal $x$ with a filter $g \in \mathbb{R}$ is defined as:
 
 $$
     (x * g) = \mathcal{F}^{-1}\left(\mathcal{F}(x) \cdot \mathcal{F}(g)\right)
