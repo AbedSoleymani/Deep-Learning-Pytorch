@@ -130,12 +130,14 @@ $$
 where $x = H^{(0)}$, $g_\theta = \Theta$, $\sigma$ is an activation function, and $\Theta$ is a diagonal matrix with learnable parameters.
 
 The presented model was Vanilla Spectral GNN with a bad Limitation: eigen-decomposition of Laplacian requires $O(n^3)$ computational complexity and can't be applied on large graphs, e.g., social networks.
+From now, our goal is to devise a way to get around this problem and make this convolution or reformulate this convolution in a way that it does not depend on the decomposition of Laplacian.
 
 ## Chebyshev Polynomials of the First Kind
+One approach is to approximates the Graph convolutional filter parameterized by $\theta$ or $g_\theta$ by Chebyshev polynomials of the diagonal matrix of eigenvalues $\Lambda$.
 Considering the fact that:
 
 $$
-\cos(0) = \cos(0)
+\cos(0) = 1
 $$
 
 $$
@@ -172,3 +174,36 @@ T_n(x) = 2xT_{n-1}(x) - T_{n-2}(x)
 $$
 
 and are orthogonal on the interval $[-1,\ 1]$.
+Now, we can write:
+
+$$
+g_{\theta} = \sum_i \theta_iT_i(\tilde{\Lambda})
+$$
+
+where $\tilde{\Lambda}$ is a scaled version of the eigenvalues of the Laplacian matrix which normalizes the eigenvalues to fall within $[-1, 1]$ in this way:
+
+$$
+\tilde{\Lambda} = \frac{2\Lambda}{\lambda_{\max}}-I_n
+$$
+
+Now, we will have:
+
+$$
+x*g_{\theta} = Ug_{\theta}U^Tx = \sum_i \theta_iUT_i(\tilde{\Lambda})U^Tx.
+$$
+
+Since $\tilde{\Lambda}$ and accordingly $T_i(\tilde{\Lambda})$ are diagonal and also $U$ is orthonormal, we can write:
+
+$$
+x*g_{\theta} = \sum_i \theta_iUT_i(\tilde{\Lambda})U^Tx = \sum_i \theta_i T_i(U \tilde{\Lambda}U^T)x = \sum_i \theta_i T_i(\tilde{L})x.
+$$
+
+We can compute $\tilde{L}$ without the eigendecomposition of Laplacian $L$. The scaled Laplacian $L$ is:
+
+$$
+\tilde{L} = \frac{2L}{\lambda_{\max}}-I_n.
+$$
+
+This algorithm is called ChebNet Graph Convolution. But, there is a big problem here: calculating $\lambda_{\max}$ requires eigen value decomposition which leads us to the same computational complexity problem! How we can get around this?
+
+Please note that the whole task is learning weights $\theta_i$. We can simply neglect devision by $\lambda_{\max}$ and learn a scaled version of $\theta_i$ instead!
