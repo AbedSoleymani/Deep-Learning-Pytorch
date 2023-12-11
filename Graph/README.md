@@ -259,7 +259,7 @@ $$
 h^\prime_i = \sigma \left( \sum_{j \in N_i} \alpha_{ij} \Theta h_j \right).
 $$
 
-where he attention weight $\alpha_{ij}$ measures the influence of node $j$ to node $i$.
+where the attention weight $\alpha_{ij}$ measures the influence of node $j$ to node $i$.
 
 
 
