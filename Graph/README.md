@@ -129,4 +129,46 @@ $$
 
 where $x = H^{(0)}$, $g_\theta = \Theta$, $\sigma$ is an activation function, and $\Theta$ is a diagonal matrix with learnable parameters.
 
-The presented model was Vanilla Spectral GNN with a bad Limitation: eigen-decomposition requires $O(n^3)$ computational complexity and can't be applied on large graphs, e.g., social networks.
+The presented model was Vanilla Spectral GNN with a bad Limitation: eigen-decomposition of Laplacian requires $O(n^3)$ computational complexity and can't be applied on large graphs, e.g., social networks.
+
+## Chebyshev Polynomials of the First Kind
+Considering the fact that:
+
+$$
+\cos(0) = \cos(0)
+$$
+
+$$
+\cos(2\theta) = 2\cos^2(\theta) - 1
+$$
+
+$$
+\cos(3\theta) = 4\cos^3(\theta) - 3\cos(\theta)
+$$
+
+By substituting $\cos(\theta) = x$, we obtain:
+
+$$
+T_0(x) = 1
+$$
+
+$$
+T_1(x) = x
+$$
+
+$$
+T_2(x) = 2x^2 - 1
+$$
+
+$$
+T_3(x) = 4x^3 - 3x
+$$
+
+where $T_n(x)$ denotes the $n^{th}$ polynomial.
+These polynomials have a nice recursive property as follow
+
+$$
+T_n(x) = 2xT_{n-1}(x) - T_{n-2}(x)
+$$
+
+and are orthogonal on the interval $[-1,\ 1]$.
