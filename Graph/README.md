@@ -117,3 +117,16 @@ $$
 $$
 
 where $\text{diag}(U^* \mathcal{F}(g))$ is a diagonal matrix with the elements of $U^* \mathcal{F}(g)$.
+
+Now, we express the mathematics of a graph convolutional layer in a Spectral CNN.
+Let $x$ be the input signal on the graph, $g$ be the filter (weight) associated with the graph convolutional layer, and $U$ be the matrix of Laplacian eigenvectors.
+
+The graph convolution operation using Laplacian eigenvectors $U$ can be written as:
+
+$$
+H' = \sigma(U \Theta U^T H)
+$$
+
+where $x = H^{(0)}$, $g_\theta = \Theta$, $\sigma$ is an activation function, and $\Theta$ is a diagonal matrix with learnable parameters.
+
+The presented model was Vanilla Spectral GNN with a Limitation: eigen-decomposition requires $O(n^3)$ computational complexity and can't be applied on large graphs, e.g., social networks.
