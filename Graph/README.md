@@ -275,14 +275,6 @@ $$
 h^\prime_i = \sigma \left( \sum_{j \in N_i} \alpha_{ij} \Theta h_j \right).
 $$
 
-where the attention weight $\alpha_{ij}$ measures the influence of node $j$ to node $i$.
+where the attention weight $\alpha_{ij}$ measures the influence of node $j$ to node $i$. This representation of GNN has several similarities with transformers!
 
 
-
-
-
-
-
-
-
->>>>>>> 8f484213c17dce4e093b590df73a9cfaef008d24
