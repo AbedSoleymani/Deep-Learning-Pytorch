@@ -47,7 +47,7 @@ class Discriminator(nn.Module):
             # Output: N x 1 x 1 x 1
 
             nn.Sigmoid(),
-        ),
+        )
 
     def _block(self, in_channels, out_channels, kernel_size, stride, padding):
         return nn.Sequential(
@@ -70,6 +70,7 @@ class Discriminator(nn.Module):
 class Generator(nn.Module):
     def __init__(self, z_dim, channels_img, features_g):
         super(Generator, self).__init__()
+
         self.gen = nn.Sequential(
             # Input: N × z_dim x 1 x 1
             self._block(in_channels=z_dim,
@@ -110,7 +111,7 @@ class Generator(nn.Module):
 
             # Output: N x channels_img × 64 x 64
             nn.Tanh(), # to map the output to [-1, 1]
-        ),
+        )
 
     def _block(self, in_channels, out_channels, kernel_size, stride, padding):
         return nn.Sequential(
@@ -134,3 +135,21 @@ def initialize_weights(model):
     for module in model.modules():
         if isinstance(module, (nn.Conv2d, nn.ConvTranspose2d, nn.BatchNorm2d)):
             nn.init.normal_(module.weight.data, 0.0, 0.02)
+
+
+if __name__ == "__main__":
+    
+    batch_size, channels_img, heigh, width, z_dim = 8, 3, 64, 64, 100
+
+    rand_img_batch = torch.randn((batch_size, channels_img, heigh, width))
+    rand_z = torch.randn((batch_size, z_dim, 1, 1))
+
+    gen = Generator(z_dim=z_dim, channels_img=channels_img, features_g=8)
+    initialize_weights(gen)
+    disc =Discriminator(channels_img=channels_img, features_d=8)
+    initialize_weights(disc)
+
+    assert gen(rand_z).shape == (batch_size, channels_img, heigh, width)
+    assert disc(rand_img_batch).shape == (batch_size, 1, 1, 1)
+
+    print("success!")
