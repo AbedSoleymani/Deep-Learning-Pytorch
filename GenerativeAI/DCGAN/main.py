@@ -1,3 +1,4 @@
+import os
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -6,11 +7,15 @@ import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
+
 from model import Discriminator, Generator, initialize_weights
+from save_png import save_png
+from save_gif import save_gif
 
 device = "mps" if torch.backends.mps.is_available() else "cpu"
+print(device)
 
-lr = 2e-4
+lr = 1e-3
 batch_size = 128
 img_size = 64
 channels_img = 1 # for mnist
@@ -37,15 +42,16 @@ opt_disc = optim.Adam(disc.parameters(), lr=lr, betas=(0.5, 0.999))
 criterion = nn.BCELoss()
 
 fixed_noise = torch.randn(32, z_dim, 1, 1).to(device)
-writer_real = SummaryWriter(f"./GenerativeAI/DCGAN/logs/real")
-writer_fake = SummaryWriter(f"./GenerativeAI/DCGAN/logs/fake")
+
+save_path = "./GenerativeAI/DCGAN/logs/fake"
+os.makedirs(save_path, exist_ok=True)
 
 step = 0
-gen.train()
-disc.train()
 
 for epoch in range(epochs):
     for batch_idx, (real, _) in enumerate(loader):
+        gen.train()
+        disc.train()
         real = real.to(device)
         noise = torch.randn((batch_size, z_dim, 1, 1)).to(device)
         fake = gen(noise)
@@ -74,18 +80,19 @@ for epoch in range(epochs):
 
         if batch_idx % 50 == 0:
             print(
-                f"Epoch [{epoch}/{epochs}] Batch {batch_idx}/{len(loader)} "
+                f"Epoch [{epoch+1}/{epochs}] Batch {batch_idx}/{len(loader)} "
                 f"Loss D: {loss_disc:.4f}, Loss G: {loss_gen:.4f}"
             )
 
+            gen.eval()
             with torch.no_grad():
                 fake = gen(fixed_noise)
-
-                # Take out (up to) 32 examples
-                img_grid_real = torchvision.utils.make_grid(real[:32], normalize=True)
-                img_grid_fake = torchvision.utils.make_grid(fake[:32], normalize=True)
-
-                writer_real.add_image("Real", img_grid_real, global_step=step)
-                writer_fake.add_image("Fake", img_grid_fake, global_step=step)
+                # Take out first 32 examples
+                img_grid_fake = torchvision.utils.make_grid(fake[:32,0,:,:], normalize=True)
+                file_path = f"{save_path}/{str(step)}.png"
+                im = img_grid_fake.cpu().numpy()
+                save_png(image=im, file_path=file_path)
 
             step += 1
+
+save_gif(step=step)
