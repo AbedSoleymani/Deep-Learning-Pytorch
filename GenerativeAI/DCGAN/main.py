@@ -28,7 +28,7 @@ transforms = transforms.Compose([
 dataset = datasets.MNIST(root= "./GenerativeAI/DCGAN/dataset/", train=True, transform=transforms, download=True)
 loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 gen = Generator(z_dim, channels_img, features_gen).to(device)
-disc = Discriminator(channels_img, channels_img).to(device)
+disc = Discriminator(channels_img, features_disc).to(device)
 initialize_weights(gen)
 initialize_weights(disc)
 
