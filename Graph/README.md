@@ -2,7 +2,7 @@
 
 ## Graph Definition and Graphical Data
 
-A graph, denoted as $G$, can be formally defined as a set of vertices $V$ and edges $E$, accompanied by an adjacency matrix `A`.
+A graph, denoted as $G$, can be formally defined as a set of vertices $V$ and edges $E$, accompanied by an adjacency matrix $A$.
 
 $$
 G = (V, E, A)
@@ -25,7 +25,66 @@ There are three forms of tasks performed by graphs:
 - Node-level task: In social networks, predicting the identity or role of each node within a graph, e.g., does this person belong to this community or not (classification) or does this person buy this camera (classification).
 - Edge-level task: Making predictions or extracting information specifically at the level of individual edges within a graph. For instance, link prediction which involves predicting whether a connection (edge) between two nodes (entities) should exist in the graph. In the context of a recommender system, this could mean predicting whether a user will be interested in or likely to interact with a particular item, such as a movie, book, or product.
 
-## Laplacian of a Graph
+## Node Embeddings
+To be completed!
+
+## The Graph Neural Network Model
+The key idea is that we want to generate representations of nodes that actually depend on the structure of the graph, as well as any feature information we might have.
+The primary challenge here is that our usual deep learning toolbox models such as CNNs or RNNs does not apply!
+One reasonable idea for defining a deep neural network over graphs would be to simply use the adjacency matrix as input to a deep neural network.
+As a result, the model should not depend on the arbitrary ordering of nodes that we used in the adjacency matrix.
+In other words, such a model should be permutation invariant or at least permutation invariant equivariant with respect to the matrix $A$.
+In mathematical terms, any function \(f\) that takes an adjacency matrix \(A\) as input should ideally satisfy one of the two following properties:
+
+$$
+f(PAP^{\top}) = f(A) \quad \text{(Permutation Invariance)}
+$$
+
+$$
+f(PAP^{\top}) = Pf(A) \quad \text{(Permutation Equivariance)},
+$$
+
+where $P$ is a permutation matrix.
+
+### Neural Message Passing
+GNNs can be thought of a form of neural message passing in which vector messages are exchanged between nodes and updated using neural networks.
+The goal is to represent graph $G = (V, E)$, along with a set of node features $X \in \mathbb{R}^{d \times |V|}$, and use this information to generate node embeddings $z_u, \forall u \in V$.
+
+During each message-passing iteration in a GNN, a hidden embedding $h_u$ corresponding to each node $u \in V$ is updated according to information aggregated from $u$'s graph neighborhood $N(u)$.
+This message-passing update can be expressed as follows:
+
+$$
+h^{(k+1)} = \text{UPDATE}^{(k)} \left( h^{(k)}_u, \text{AGGREGATE}^{(k)}\left(\{h^{(k)}_v, \forall v \in N(u)\}\right) \right)
+$$
+
+$$
+= \text{UPDATE}^{(k)}\left(h^{(k)}_u, m^{(k)} _{N(u)}\right)
+$$
+
+where $\text{UPDATE}$ and $\text{AGGREGATE}$ are arbitrary differentiable functions (i.e., neural networks), and $m_{N(u)}$ is the message that is aggregated from $u$'s graph neighborhood $N(u)$.
+
+At each iteration $k$ of the GNN, the $\textit{AGGREGATE}$ function takes as input the set of embeddings of the nodes in $u$'s graph neighborhood $N(u)$ and generates a message $m^{(k)} _{N(u)}$ based on this aggregated neighborhood information. The $\textit{UPDATE}$ function then combines the message $m^{(k)} _{N(u)}$ with the previous embedding $h_u^{(k-1)}$ of node $u$ to generate the updated embedding $h_u^{(k)}$.
+
+The initial embeddings at $k = 0$ are set to the input features for all the nodes, i.e., $h^{(0)}_u = x_u, \forall u \in V$. After running $K$ iterations of the GNN message passing, we can use the output of the final layer to define the embeddin for each node, i.e., $z_u = h^{(K)}_u, \forall u \in V$.
+
+The basic intuition behind the GNN message-passing framework is straight- forward: at each iteration, every node aggregates information from its local neighborhood, and as these iterations progress each node embedding contains more and more information from further reaches of the graph. To be precise: after the first iteration ($k = 1$), every node embedding contains information from its $1$-hop neighborhood, i.e., every node embedding contains information about the features of its immediate graph neighbors, which can be reached by a path of length $1$ in the graph; after the second iteration ($k = 2$) every node embedding contains information from its $2$-hop neighborhood; and in general, after $k$ iterations every node embedding contains information about its $k$-hop neighborhood.
+
+Such node embeddings in GNNs encode two main types of information.
+First, there's structural information about the graph, where after $k$ iterations, the embedding $z_u$ of node $u$ might encode details about the degrees of nodes in $u$’s $k$-hop neighborhood (similar to the receptive field concept in CNNs). This structural information is valuable for tasks like molecular graph analysis, where degree information helps infer atom types and structural motifs like benzene rings.
+Second, GNN node embeddings also capture feature-based information, encoding details about all features in their $k$-hop neighborhood after $k$ iterations of message passing. This local feature-aggregation in GNNs is similar to the behavior of convolutional kernels in CNNs, but GNNs aggregate information based on local graph neighborhoods.
+
+So far, we have discussed the GNN framework in a relatively abstract fashion using UPDATE and AGGREGATE functions. How we can implement it mathematically?
+The basic GNN message passing is defined as
+
+$$
+h^{(k)} _u = \sigma\left( W^{(k)} _{\text{self}} h^{(k-1)} _u + W^{(k)} _{\text{neigh}} \sum _{v \in \mathcal{N}(u)} h^{(k-1)} _v \right)
+$$
+
+where $W^{(k)} _{\text{self}}, W^{(k)} _{\text{neigh}} \in \mathbb{R}^{d^{(k)} \times d^{(k-1)}}$ are trainable parameter matrices and $\sigma$ denotes an elementwise non-linearity (e.g., a $tanh$ or $ReLU$).
+
+
+
+### Laplacian of a Graph
 The Laplacian matrix $L$ of a graph provides Insights Into the graph's structure, Including its connectivity and the presence of clusters
 
 $$
@@ -72,7 +131,7 @@ $$
 \widetilde{L} = I - D^{-\frac{1}{2}}AD^{-1}
 $$
 
-## Laplacian Eigenvectors and Fourier Analysis
+### Laplacian Eigenvectors and Fourier Analysis
 The relation between Laplacian eigenvectors and Fourier analysis is rooted in spectral graph theory. In this context, the Laplacian matrix of a graph plays a role analogous to the Fourier transform in signal processing.
 
 Fourier analysis is the decomposition of a signal into sinusoidal components. A signal is transformed to represent it as a sum of its frequency components. Sine and cosine functions serve as the basis for this transformation. These basis functions are orthogonal, ensuring a unique frequency representation.
@@ -117,7 +176,6 @@ $$
 $$
 
 where $\text{diag}(U^* \mathcal{F}(g))$ is a diagonal matrix with the elements of $U^* \mathcal{F}(g)$.
-<<<<<<< HEAD
 
 Now, we express the mathematics of a graph convolutional layer in a Spectral CNN.
 Let $x$ be the input signal on the graph, $g$ be the filter (weight) associated with the graph convolutional layer, and $U$ be the matrix of Laplacian eigenvectors.
@@ -131,8 +189,6 @@ $$
 where $x = H^{(0)}$, $g_\theta = \Theta$, $\sigma$ is an activation function, and $\Theta$ is a diagonal matrix with learnable parameters.
 
 The presented model was Vanilla Spectral GNN with a Limitation: eigen-decomposition requires $O(n^3)$ computational complexity and can't be applied on large graphs, e.g., social networks.
-||||||| 3d36471
-=======
 
 Now, we express the mathematics of a graph convolutional layer in a Spectral CNN.
 Let $x$ be the input signal on the graph, $g$ be the filter (weight) associated with the graph convolutional layer, and $U$ be the matrix of Laplacian eigenvectors.
@@ -148,7 +204,7 @@ where $x = H^{(0)}$, $g_\theta = \Theta$, $\sigma$ is an activation function, an
 The presented model was Vanilla Spectral GNN with a bad Limitation: eigen-decomposition of Laplacian requires $O(n^3)$ computational complexity and can't be applied on large graphs, e.g., social networks.
 From now, our goal is to devise a way to get around this problem and make this convolution or reformulate this convolution in a way that it does not depend on the decomposition of Laplacian.
 
-## Chebyshev Polynomials of the First Kind
+### Chebyshev Polynomials of the First Kind
 One approach is to approximates the Graph convolutional filter parameterized by $\theta$ or $g_\theta$ by Chebyshev polynomials of the diagonal matrix of eigenvalues $\Lambda$.
 Considering the fact that:
 
