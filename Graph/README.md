@@ -50,7 +50,11 @@ where $P$ is a permutation matrix.
 GNNs can be thought of a form of neural message passing in which vector messages are exchanged between nodes and updated using neural networks.
 The goal is to represent graph $G = (V, E)$, along with a set of node features $X \in \mathbb{R}^{d \times |V|}$, and use this information to generate node embeddings $z_u, \forall u \in V$.
 
-During each message-passing iteration in a GNN, a hidden embedding $h_u$ corresponding to each node $u \in V$ is updated according to information aggregated from $u$'s graph neighborhood $N(u)$.
+During each message-passing iteration in a GNN, a hidden embedding $h_u$ corresponding to each node $u \in V$ is updated according to information aggregated from $u$'s graph neighborhood $N(u)$ as shown in the following figure:
+<div align="center">
+<img width="600" alt="image" src="https://github.com/AbedSoleymani/Deep-Learning-Pytorch/assets/72225265/3d85563a-fb2d-4374-95eb-07c1494ae269">
+<div align="left">
+
 This message-passing update can be expressed as follows:
 
 $$
