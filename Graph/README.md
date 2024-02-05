@@ -77,7 +77,7 @@ Such node embeddings in GNNs encode two main types of information.
 First, there's structural information about the graph, where after $k$ iterations, the embedding $z_u$ of node $u$ might encode details about the degrees of nodes in $u$’s $k$-hop neighborhood (similar to the receptive field concept in CNNs). This structural information is valuable for tasks like molecular graph analysis, where degree information helps infer atom types and structural motifs like benzene rings.
 Second, GNN node embeddings also capture feature-based information, encoding details about all features in their $k$-hop neighborhood after $k$ iterations of message passing. This local feature-aggregation in GNNs is similar to the behavior of convolutional kernels in CNNs, but GNNs aggregate information based on local graph neighborhoods.
 
-So far, we have discussed the GNN framework in a relatively abstract fashion using UPDATE and AGGREGATE functions. How we can implement it mathematically?
+So far, we have discussed the GNN framework in a relatively abstract fashion using $\textit{UPDATE}$ and $\textit{AGGREGATE}$ functions. How we can implement it mathematically?
 The basic GNN message passing is defined as
 
 $$
@@ -101,7 +101,7 @@ Simplifying the message passing in this way can often alleviate overfitting, but
 In this case, dding self-loops is equivalent updating matrix $A$ with $A+I$ and sharing parameters between the $W_{\text{self}}$ and $W_{\text{neigh}}$ matrices (which is the primary reason for preventing overfitting), which gives the following graph-level update:
 
 $$
-H(t) = \sigma\left((A + I)H^{(t-1)}W^{(t)}\right).
+H^{(t)} = \sigma\left((A + I)H^{(t-1)}W^{(t)}\right).
 $$
 
 
