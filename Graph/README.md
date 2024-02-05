@@ -82,6 +82,24 @@ $$
 
 where $W^{(k)} _{\text{self}}, W^{(k)} _{\text{neigh}} \in \mathbb{R}^{d^{(k)} \times d^{(k-1)}}$ are trainable parameter matrices and $\sigma$ denotes an elementwise non-linearity (e.g., a $tanh$ or $ReLU$).
 
+We can re-write the equation in terms of graph-level equations as
+
+$$
+H^{(t)} = \sigma\left(AH^{(k-1)}W^{(k)} _{\text{neigh}} + H^{(k-1)}W^{(k)} _{\text{self}}\right)
+$$
+
+where $H^{(k)} \in \mathbb{R}^{|V| \times d}$ denotes the matrix of node representations at layer $k$ in the GNN.
+
+As a simplification of the neural message passing approach, it is common to add self-loops to the input graph and omit the explicit update step. In other words, we can apply aggregation over the set $N(u) \cup \{u\}$, i.e., the node’s neighbors as well as the node itself.
+The benefit of this approach is that we no longer need to define an explicit update function, as the update is implicitly defined through the aggregation method.
+Simplifying the message passing in this way can often alleviate overfitting, but it also severely limits the expressivity of the GNN, as the information coming from the node’s neighbours cannot be differentiated from the information from the node itself.
+
+In this case, dding self-loops is equivalent updating matrix $A$ with $A+I$ and sharing parameters between the $W_{\text{self}}$ and $W_{\text{neigh}}$ matrices (which is the primary reason for preventing overfitting), which gives the following graph-level update:
+
+$$
+H(t) = \sigma\left((A + I)H^{(t-1)}W^{(t)}\right).
+$$
+
 
 
 ### Laplacian of a Graph
